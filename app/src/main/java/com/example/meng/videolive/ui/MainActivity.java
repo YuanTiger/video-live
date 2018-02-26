@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.example.meng.videolive.R;
 
+/**
+ * 无难点
+ */
 public class MainActivity extends BaseActivity {
 
     private final String mTabSpec[] = {"head", "classify", "heart", "search"};

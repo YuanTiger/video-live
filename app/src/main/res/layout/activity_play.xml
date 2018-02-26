@@ -5,22 +5,26 @@
     android:layout_height="match_parent"
     tools:context="com.example.meng.videolive.ui.PlayActivity">
 
+    <!--视频播放层,使用vitamio引擎-->
     <io.vov.vitamio.widget.VideoView
         android:id="@+id/vtm_vv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
+    <!--弹幕层，使用bilibili的烈焰弹幕使-->
+    <!--弹幕层当然在视频播放的上层-->
     <master.flame.danmaku.ui.widget.DanmakuView
         android:id="@+id/danmakuView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!--按钮控制层-->
     <RelativeLayout
         android:id="@+id/view_control"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#20000000"
-        android:visibility="invisible">
+        >
 
         <Button
             android:id="@+id/btn_back"

@@ -8,6 +8,7 @@ import com.example.meng.videolive.douyuDanmu.client.DyBulletScreenClient;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import io.vov.vitamio.utils.Log;
 import master.flame.danmaku.controller.DrawHandler;
 import master.flame.danmaku.controller.IDanmakuView;
 import master.flame.danmaku.danmaku.loader.ILoader;
@@ -24,6 +25,7 @@ import master.flame.danmaku.danmaku.parser.android.BiliDanmukuParser;
 
 /**
  * Created by 小萌神_0 on 2016/5/31.
+ * 弹幕线程
  *
  */
 public class DanmuProcess {
@@ -45,6 +47,9 @@ public class DanmuProcess {
         getAndAddDanmu();
     }
 
+    /**
+     * 设置弹幕属性
+     */
     private void initDanmaku() {
         mDanmakuContext = DanmakuContext.create();
         try {
@@ -110,6 +115,9 @@ public class DanmuProcess {
         return parser;
     }
 
+    /**
+     * 获取弹幕并添加至弹幕队列中
+     */
     private void getAndAddDanmu() {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -129,6 +137,7 @@ public class DanmuProcess {
                 mDanmuClient.setmHandleMsgListener(new DyBulletScreenClient.HandleMsgListener() {
                     @Override
                     public void handleMessage(String txt) {
+                        Log.i("弹幕获取:"+txt);
                         addDanmaku(true, txt);
                     }
                 });

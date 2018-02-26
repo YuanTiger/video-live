@@ -20,16 +20,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.vov.vitamio.Vitamio;
+import io.vov.vitamio.widget.VideoView;
 import master.flame.danmaku.controller.IDanmakuView;
 
+/**
+ * 直播观看的Activity
+ * 视频播放层+弹幕层+按钮控制层
+ */
 public class PlayActivity extends Activity {
     private static final String TAG = "PLAY_ACTIVITY";
     private static final int CONTROL_STAY_TIME = 4000;
 
-    @BindView(R.id.vtm_vv) io.vov.vitamio.widget.VideoView videoView;
-    @BindView(R.id.view_control) RelativeLayout mViewControl;
-    @BindView(R.id.danmakuView) IDanmakuView mDanmakuView;
-    @BindView(R.id.ib_heart) ImageButton mBtnHeart;
+    @BindView(R.id.vtm_vv)
+    VideoView videoView;
+    @BindView(R.id.view_control)
+    RelativeLayout mViewControl;
+    @BindView(R.id.danmakuView)
+    IDanmakuView mDanmakuView;
+    @BindView(R.id.ib_heart)
+    ImageButton mBtnHeart;
 
     private DanmuProcess mDanmuProcess;
     private RoomIdDatabaseHelper mRoomIdDB;
@@ -41,12 +50,15 @@ public class PlayActivity extends Activity {
         Vitamio.isInitialized(this);
         setContentView(R.layout.activity_play);
         ButterKnife.bind(this);
-
+        //默认隐藏控制层
         hideSystemUI();
+        //获取传递参数
         String path = getIntent().getStringExtra("PATH");
         mRoomId = getIntent().getIntExtra("ROOM_ID", -1);
         init();
+        //开始播放视频
         playVideo(path);
+        //开始弹幕
         playDanmu();
     }
 
@@ -75,6 +87,9 @@ public class PlayActivity extends Activity {
         }
     };
 
+    /**
+     * 隐藏按钮控制层
+     */
     private void hideSystemUI() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -84,6 +99,9 @@ public class PlayActivity extends Activity {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
+    /**
+     * 控制层的点击事件初始化
+     */
     private void init() {
         Button mBtnBack;
         Switch mDanmuSwitch;
@@ -94,12 +112,14 @@ public class PlayActivity extends Activity {
         mDanmuSwitch = (Switch) findViewById(R.id.swch_danmu);
 
         mViewControl.setVisibility(View.INVISIBLE);
+        //回退
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+        //弹幕开关的点击事件
         mDanmuSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -111,7 +131,7 @@ public class PlayActivity extends Activity {
                 restartHideViewDelay();
             }
         });
-
+        //初始化关注状态
         if (mRoomIdDB.getRoomIds().contains(mRoomId)) {
             mBtnHeart.setImageResource(R.mipmap.ic_heart_press);
         } else {
@@ -135,11 +155,19 @@ public class PlayActivity extends Activity {
         mHandler.postDelayed(mRunnable, CONTROL_STAY_TIME);
     }
 
+    /**
+     * 开始启动弹幕
+     */
     private void playDanmu() {
         mDanmuProcess = new DanmuProcess(this, mDanmakuView, mRoomId);
         mDanmuProcess.start();
     }
 
+    /**
+     * 开始播放直播（视频）
+     *
+     * @param path 直播视频的路径
+     */
     private void playVideo(String path) {
         Uri uri = Uri.parse(path);
         videoView.setVideoURI(uri);

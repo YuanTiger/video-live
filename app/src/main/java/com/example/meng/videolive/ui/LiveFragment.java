@@ -31,7 +31,11 @@ import in.srain.cube.views.ptr.PtrHandler;
 
 /**
  * Created by 小萌神_0 on 2016/5/27.
- *
+ * <p>
+ * 直播列表，URL由通过newInstance(String)传入
+ * 第三方下拉刷新框架+RecyclerView
+ * 其显示的列表图片仅仅是一张图片，使用Glide加载，详见RoomInfoAdapter
+ * 至此无难点，还未使用音频技能
  */
 public class LiveFragment extends Fragment {
     private static final String TAG = "LIVE_FRAGMENT";
@@ -97,9 +101,11 @@ public class LiveFragment extends Fragment {
             }
         });
         mRecyclerView.setLayoutManager(gridLayoutManager);
+        //为RecyclerView的条目设置点击事件
         mAdapter.setAdapterCallback(new AdapterCallback() {
             @Override
             public void onItemClick(View view, int position) {
+                //点击某个主播时，发出请求，mStreamUrlListener为回调
                 mNetworkRequest.getStreamUrl(mRoomInfos.get(position).getRoomId(), mStreamUrlListener);
             }
 
@@ -111,7 +117,7 @@ public class LiveFragment extends Fragment {
             @Override
             public void onPositionChanged(int position) {
                 if (position == (mRoomInfos.size() - 10)) {
-                    String url = mRequestUrl + "&offset=" + mOffset*20;
+                    String url = mRequestUrl + "&offset=" + mOffset * 20;
                     mOffset++;
                     mNetworkRequest.getSubChannel(url, mFootRefreshListener);
                 }
@@ -119,9 +125,13 @@ public class LiveFragment extends Fragment {
         });
     }
 
+    /**
+     * 直播条目的点击回调
+     */
     private RequestStreamUrlListener mStreamUrlListener = new RequestStreamUrlListener() {
         @Override
         public void onSuccess(int roomId, String url) {
+
             Intent intent = new Intent(getActivity(), PlayActivity.class);
             intent.putExtra("PATH", url);
             intent.putExtra("ROOM_ID", roomId);
